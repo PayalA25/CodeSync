@@ -93,12 +93,14 @@ io.on("connection", (socket) => {
 
 
   // leave room (disconnect)
-  socket.on("disconnect", () => {
+  socket.on("disconnecting", () => {
     const rooms = [...socket.rooms];
+    const username = userSocketMap[socket.id];
+
     rooms.forEach((roomId) => {
       socket.to(roomId).emit(ACTIONS.DISCONNECTED, {
         socketId: socket.id,
-        username: userSocketMap[socket.id],
+        username,
       });
     });
 
