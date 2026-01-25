@@ -1,8 +1,8 @@
 
 import './App.css';
 import { Routes, Route } from "react-router-dom";
-import EditorPage from "./component/EditorPage.js";
-import Home from "./component/Home.js";
+import EditorPage from "./component/EditorPage.jsx";
+import Home from "./component/Home.jsx";
 import { Toaster } from 'react-hot-toast';
 
 function App() {
