@@ -23,7 +23,7 @@ const Editor = ({ socketRef, roomId }) => {
       }
     );
 
-    // 🔥 When local user types
+    //  When local user types
     editorRef.current.on("change", (instance, changes) => {
       const code = instance.getValue();
 
@@ -40,7 +40,7 @@ const Editor = ({ socketRef, roomId }) => {
   useEffect(() => {
     if (!socketRef.current) return;
 
-    // 🔥 Receive code from other users
+    // Receive code from other users
     socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
       if (code !== null) {
         editorRef.current.setValue(code);
