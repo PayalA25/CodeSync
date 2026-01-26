@@ -12,6 +12,8 @@ function Home() {
   const generateRoomId = (e) => {
     e.preventDefault();
     const Id = uuid();
+
+    
     setRoomId(Id);
     toast.success("Room Id is generated");
   };
