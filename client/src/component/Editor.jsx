@@ -12,6 +12,7 @@ const Editor = ({ socketRef, roomId }) => {
   const editorRef = useRef(null);
 
   useEffect(() => {
+    if (editorRef.current) return;
     editorRef.current = Codemirror.fromTextArea(
       document.getElementById("realtimeEditor"),
       {
@@ -23,10 +24,13 @@ const Editor = ({ socketRef, roomId }) => {
       }
     );
 
+
+    editorRef.current.setSize(null , "100%");
+
     //  When local user types
     editorRef.current.on("change", (instance, changes) => {
       const code = instance.getValue();
-
+       
       // prevent loop
       if (changes.origin !== "setValue") {
         socketRef.current.emit(ACTIONS.CODE_CHANGE, {
@@ -37,6 +41,7 @@ const Editor = ({ socketRef, roomId }) => {
     });
   }, []);
 
+   // data receive from server
   useEffect(() => {
     if (!socketRef.current) return;
 
@@ -52,7 +57,8 @@ const Editor = ({ socketRef, roomId }) => {
     };
   }, [socketRef.current]);
 
-  return <textarea id="realtimeEditor"></textarea>;
-};
+  return <div style={{ height: "600px" }}>
+      <textarea id="realtimeEditor"></textarea>
+    </div>};
 
 export default Editor;

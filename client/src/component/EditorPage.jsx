@@ -196,7 +196,7 @@ function EditorPage() {
         </div>
 
         {/* Editor panel */}
-        <div className="col-md-10 text-light d-flex flex-column">
+        <div className="col-md-10 text-light d-flex flex-column ">
           {/* Language selector */}
           <div className="bg-dark p-2 d-flex justify-content-end">
             <select
@@ -212,13 +212,16 @@ function EditorPage() {
             </select>
           </div>
 
-          <Editor
-            socketRef={socketRef}
-            roomId={roomId}
-            onCodeChange={(code) => {
-              codeRef.current = code;
-            }}
-          />
+          
+  <Editor
+    socketRef={socketRef}
+    roomId={roomId}
+    onCodeChange={(code) => {
+      codeRef.current = code;
+    }}
+  />
+
+
         </div>
       </div>
 
