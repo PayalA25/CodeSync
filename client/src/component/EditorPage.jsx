@@ -142,21 +142,35 @@ function EditorPage() {
   };
 
   const runCode = async () => {
-    setIsCompiling(true);
-    try {
-      const response = await axios.post("http://localhost:5000/compile", {
-        code: codeRef.current,
-        language: selectedLanguage,
-      });
-      console.log("Backend response:", response.data);
-      setOutput(response.data.output || JSON.stringify(response.data));
-    } catch (error) {
-      console.error("Error compiling code:", error);
-      setOutput(error.response?.data?.error || "An error occurred");
-    } finally {
-      setIsCompiling(false);
+  if (!codeRef.current || codeRef.current.trim() === "") {
+    toast.error("Please write some code first");
+    return;
+  }
+
+  setIsCompiling(true);
+  try {
+    const response = await axios.post("http://localhost:5000/compile", {
+      code: codeRef.current,
+      language: selectedLanguage,
+    });
+
+    console.log("Backend response:", response.data);
+
+    const { output, error } = response.data.data;
+
+    if (error) {
+      setOutput(error);
+    } else {
+      setOutput(output);
     }
-  };
+  } catch (error) {
+    console.error("Error compiling code:", error);
+    setOutput(error.response?.data?.message || "An error occurred");
+  } finally {
+    setIsCompiling(false);
+  }
+};
+
 
   const toggleCompileWindow = () => {
     setIsCompileWindowOpen(!isCompileWindowOpen);
