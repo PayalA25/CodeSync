@@ -72,7 +72,8 @@ function EditorPage() {
         // Join room
       socketRef.current.emit(ACTIONS.JOIN, {
         roomId,
-        username: Location.state?.username,// safe because we already checked
+        username: Location.state?.username,
+        // safe because we already checked
       });
 
       // Handle new user joined
@@ -92,7 +93,9 @@ function EditorPage() {
   return Array.from(uniqueClients.values());
 });
 });
-
+socketRef.current.on(ACTIONS.LANGUAGE_CHANGE, ({ language }) => {
+    setSelectedLanguage(language);
+  });
 
 
       //     socketRef.current.emit(ACTIONS.SYNC_CODE, {
@@ -119,6 +122,7 @@ function EditorPage() {
    return () => {
   if (socketRef.current) {
     socketRef.current.off(ACTIONS.JOINED);
+    socketRef.current.off(ACTIONS.LANGUAGE_CHANGE);
     socketRef.current.off(ACTIONS.DISCONNECTED);
     socketRef.current.disconnect();
   }
@@ -216,8 +220,16 @@ function EditorPage() {
             <select
               className="form-select w-auto"
               value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-            >
+            onChange={(e) => {
+    const lang = e.target.value;
+    setSelectedLanguage(lang);
+
+    socketRef.current.emit(ACTIONS.LANGUAGE_CHANGE, {
+      roomId,
+      language: lang,
+    });
+  }}
+   >
               {LANGUAGES.map((lang) => (
                 <option key={lang} value={lang}>
                   {lang}
@@ -230,6 +242,7 @@ function EditorPage() {
   <Editor
     socketRef={socketRef}
     roomId={roomId}
+    language={selectedLanguage}  
     onCodeChange={(code) => {
       codeRef.current = code;
     }}

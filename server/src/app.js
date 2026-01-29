@@ -27,13 +27,13 @@ app.use(express.json());
 // Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5137",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
 
 io.on("connection", (socket) => {
-  console.log("🔌 Connected:", socket.id);
+  //console.log("🔌 Connected:", socket.id);
 
   // JOIN ROOM
   socket.on(ACTIONS.JOIN, async ({ roomId, username }) => {
@@ -42,10 +42,12 @@ io.on("connection", (socket) => {
 
       // save/update user
       await User.findOneAndUpdate(
-        { socketId: socket.id },
-        { socketId: socket.id, username, roomId },
-        { upsert: true }
-      );
+       { roomId, username },          //  stable identity
+      { 
+        $set: { socketId: socket.id } // update socketId if reconnect
+      },
+      { upsert: true, new: true }
+    );
 
       // get or create room safely
       const room = await RoomCode.findOneAndUpdate(
@@ -55,7 +57,9 @@ io.on("connection", (socket) => {
       );
 
       // send latest code to new user
-      socket.emit(ACTIONS.CODE_CHANGE, { code: room.code || "" , language: room.language || "java"});
+      socket.emit(ACTIONS.CODE_CHANGE, {
+        
+        code: room.code || "" , language: room.language || "java"});
 
       // notify all users in room
       const users = await User.find({ roomId });
@@ -68,20 +72,33 @@ io.on("connection", (socket) => {
       console.error("JOIN ROOM ERROR:", error.message);
     }
   });
+  socket.on(ACTIONS.LANGUAGE_CHANGE, async ({ roomId, language }) => {
+  console.log("🔥 LANGUAGE RECEIVED:", language);
+
+  await RoomCode.updateOne(
+    { roomId },
+    { $set: { language } }
+  );
+
+  socket.to(roomId).emit(ACTIONS.LANGUAGE_CHANGE, {
+    language,
+  });
+});
+
 
   // CODE CHANGE
-  socket.on(ACTIONS.CODE_CHANGE, async ({ roomId, code, language  }) => {
+  socket.on(ACTIONS.CODE_CHANGE, async ({ roomId, code  }) => {
+      //console.log("🔥 LANGUAGE RECEIVED:", language);
     try {
       await RoomCode.updateOne(
         { roomId },
         { 
-          code ,
-          language: language || "java",
+          code  
         }
         );
       socket.to(roomId).emit(ACTIONS.CODE_CHANGE, {
          code 
-         , language: language || "java"
+         
         });
     } catch (error) {
       console.error("CODE CHANGE ERROR:", error.message);

@@ -13,7 +13,7 @@ const roomCodeSchema = new Schema(
      },
   language: {
      type: String, 
-     default: "java"
+     default: "java" 
      },
 }, { 
     timestamps: true 

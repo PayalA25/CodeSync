@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const compiler = asyncHandler(async (req, res) => {
-    const { code, language } = req.body;
+    const { code, language ,roomId } = req.body;
 
     // Language configuration for JDoodle API
     const languageConfig = {
@@ -32,6 +32,13 @@ const compiler = asyncHandler(async (req, res) => {
     if (!languageConfig[language]) {
         throw new ApiError(400, "Unsupported programming language");
     }   
+    if (roomId && language) {
+      await RoomCode.updateOne(
+        { roomId },
+        { $set: { language } },
+        { upsert: true }
+      );
+    }
 
      const response = await axios.post(
         "https://api.jdoodle.com/v1/execute", 

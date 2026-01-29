@@ -7,7 +7,7 @@ import "codemirror/addon/edit/closebrackets";
 import "codemirror/lib/codemirror.css";
 import { ACTIONS } from "../Action.js";
 
-const Editor = ({ socketRef, roomId, onCodeChange }) => {
+const Editor = ({ socketRef, roomId, language, onCodeChange }) => {
   const editorRef = useRef(null);
 
   useEffect(() => {
@@ -35,10 +35,11 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
       // 🔥 sync to parent
       onCodeChange(code);
 
-      if (changes.origin !== "setValue") {
+      if (changes.origin && changes.origin !== "setValue") {
         socketRef.current.emit(ACTIONS.CODE_CHANGE, {
           roomId,
           code,
+          
         });
       }
     });
@@ -47,17 +48,19 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   useEffect(() => {
     if (!socketRef.current) return;
 
-    socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
-      if (code !== null) {
-        editorRef.current.setValue(code);
-        onCodeChange(code); // keep parent in sync
-      }
-    });
+    const handleCodeChange = ({ code }) => {
+    if (code !== null) {
+      editorRef.current.setValue(code);
+      onCodeChange(code);
+    }
+  };
+
+  socketRef.current.on(ACTIONS.CODE_CHANGE, handleCodeChange);
 
     return () => {
       socketRef.current.off(ACTIONS.CODE_CHANGE);
     };
-  }, []);
+  }, [socketRef, onCodeChange,language]);
 
   return (
     <div style={{ height: "600px" }}>
