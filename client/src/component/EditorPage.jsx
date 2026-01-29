@@ -189,9 +189,10 @@ socketRef.current.on(ACTIONS.LANGUAGE_CHANGE, ({ language }) => {
             src="/images/codesync.png"
             alt="Logo"
             className="img-fluid mx-auto"
-            style={{ maxWidth: "150px", marginTop: "-43px" }}
+            style={{ maxWidth: "150px", marginTop: "-3px" }}
+            
           />
-          <hr style={{ marginTop: "-3rem" }} />
+          <hr style={{ marginTop: "0rem" }} />
 
           {/* Client list container */}
           <div className="d-flex flex-column flex-grow-1 overflow-auto">
