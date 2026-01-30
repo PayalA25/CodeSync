@@ -41,12 +41,6 @@ Users create or join a room using a unique room ID. Once connected, any code cha
 
 ---
 
-## License
-
-MIT License
-
----
-
 ## Author
 
 **Payal Abhale**  
