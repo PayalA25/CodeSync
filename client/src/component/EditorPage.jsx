@@ -153,7 +153,7 @@ socketRef.current.on(ACTIONS.LANGUAGE_CHANGE, ({ language }) => {
 
   setIsCompiling(true);
   try {
-    const response = await axios.post("http://localhost:5000/compile", {
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/compile`, {
       code: codeRef.current,
       language: selectedLanguage,
     });
