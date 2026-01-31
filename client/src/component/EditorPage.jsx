@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Client from "./Client.jsx";
 import Editor from "./Editor.jsx";
-import { initSocket } from "../Socket.js";
+import { initSocket } from "../socket.js";
 import { ACTIONS } from "../Action.js";
 import {
   useNavigate,
