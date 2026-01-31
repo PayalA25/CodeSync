@@ -136,5 +136,9 @@ io.on("connection", (socket) => {
 // routes
 import compilerRoute from "./routes/compiler.routes.js";
 app.use("/", compilerRoute);
+app.get("/wrok", (req, res) => {
+  res.send("CodeSync backend is running 🚀");
+});
+
 
 export { app, server };
