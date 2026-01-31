@@ -16,7 +16,11 @@ const server = http.createServer(app);
 
 
 // middleware
-app.use(cors()) ;
+app.use(cors({
+    origin: "https://code-sync-beta-five.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true,
+  })) ;
 app.use(express.json()); 
 
 // app.use(express.json({limit: "10kb"}))
@@ -27,7 +31,7 @@ app.use(express.json());
 // Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin:  "https://code-sync-beta-five.vercel.app",
     methods: ["GET", "POST"],
   },
 });
